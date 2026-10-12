@@ -10,7 +10,6 @@
     "preview": "npx vite preview"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.133.0",
     "@supabase/supabase-js": "^2.52.1",
     "@vercel/analytics": "^1.5.0",
     "date-fns": "^4.0.0",
