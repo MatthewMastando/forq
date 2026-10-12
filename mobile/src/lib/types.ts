@@ -1,12 +1,25 @@
-// Shapes returned by the /api/generate endpoint (see api/_lib/schema.ts in the repo root).
-
 export type GoalId = 'healthy' | 'budget' | 'weight-loss' | 'muscle-gain' | 'quick' | 'family';
-export type Mode = 'single' | 'week';
+export type MealType = 'breakfast' | 'lunch' | 'dinner';
+export type PlanMode = 'tonight' | 'week';
+
+export type Aisle =
+  | 'Produce'
+  | 'Meat & Seafood'
+  | 'Dairy & Eggs'
+  | 'Bakery'
+  | 'Pantry'
+  | 'Spices'
+  | 'Canned & Jarred'
+  | 'Grains & Pasta'
+  | 'Frozen'
+  | 'Condiments & Sauces';
 
 export interface Ingredient {
   name: string;
-  quantity: string;
-  aisle: string;
+  amount: number | null;
+  unit: string;
+  aisle: Aisle;
+  note?: string;
 }
 
 export interface Macros {
@@ -14,43 +27,46 @@ export interface Macros {
   proteinGrams: number;
   carbsGrams: number;
   fatGrams: number;
+  fiberGrams: number;
+}
+
+export interface RecipeImage {
+  url: string;
+  unsplashId: string;
+  alt: string;
+  photographer: string;
+  photographerUsername: string;
 }
 
 export interface Recipe {
   id: string;
   title: string;
   description: string;
+  goals: GoalId[];
+  mealType: MealType;
+  cuisine: string;
   servings: number;
   prepMinutes: number;
   cookMinutes: number;
-  estimatedCostPerServing: number;
+  difficulty: 'easy' | 'medium';
+  costPerServing: number;
   macrosPerServing: Macros;
+  tags: string[];
   ingredients: Ingredient[];
   steps: string[];
-  whyItFitsGoal: string;
+  image: RecipeImage | null;
 }
 
 export interface PlanDay {
-  day: string;
-  recipeIds: string[];
+  label: string;
+  recipeId: string;
 }
 
-export interface ShoppingItem {
-  name: string;
-  quantity: string;
-  aisle: string;
-}
-
-export interface GenerateRequest {
+export interface Plan {
   goal: GoalId;
   store: string;
   servings: number;
-  mode: Mode;
-  notes?: string;
-}
-
-export interface GenerateResponse {
-  recipes: Recipe[];
-  plan: PlanDay[];
-  shoppingList: ShoppingItem[];
+  mode: PlanMode;
+  days: PlanDay[];
+  createdAt: string;
 }

@@ -1,27 +1,43 @@
 import { useColorScheme } from 'react-native';
 
 const light = {
-  background: '#FFF9F5',
-  card: '#FFFFFF',
-  text: '#1D1B1A',
-  muted: '#6F6863',
-  border: '#EADFD7',
-  accent: '#E8572A',
-  accentText: '#FFFFFF',
-  selected: '#FDE6DC',
+  background: '#FBF7F2',
+  surface: '#FFFFFF',
+  surfaceAlt: '#F3ECE4',
+  text: '#1C1917',
+  textMuted: '#78716C',
+  border: '#E7DED4',
+  accent: '#E4572E',
+  accentSoft: '#FCE8E0',
+  onAccent: '#FFFFFF',
+  success: '#2F8F5B',
+  overlay: 'rgba(0,0,0,0.45)',
 };
 
 const dark: typeof light = {
-  background: '#151312',
-  card: '#211E1C',
-  text: '#F6F1EE',
-  muted: '#A69C96',
-  border: '#3A3431',
-  accent: '#FF7A4D',
-  accentText: '#1D1B1A',
-  selected: '#4A2A1F',
+  background: '#141210',
+  surface: '#1F1C19',
+  surfaceAlt: '#2A2622',
+  text: '#F5F0EB',
+  textMuted: '#A8A29E',
+  border: '#36312C',
+  accent: '#FF7A50',
+  accentSoft: '#3D2219',
+  onAccent: '#1C1917',
+  success: '#4CC38A',
+  overlay: 'rgba(0,0,0,0.55)',
 };
 
-export function useTheme() {
+export type Theme = typeof light;
+
+export function useTheme(): Theme {
   return useColorScheme() === 'dark' ? dark : light;
 }
+
+export const fonts = {
+  display: 'Fraunces_700Bold',
+  displaySemi: 'Fraunces_600SemiBold',
+};
+
+export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32 };
+export const radius = { sm: 10, md: 14, lg: 20, pill: 999 };
