@@ -11,6 +11,7 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Search } from './pages/Search';
 import { ForkView } from './pages/ForkView';
+import { SharedRecipe } from './pages/SharedRecipe';
 import { AuthProvider } from './context/AuthContext';
 import { RecipeProvider } from './context/RecipeContext';
 import { Analytics } from "@vercel/analytics/react";
@@ -34,6 +35,7 @@ export function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/recipe/:id/forks" element={<ForkView />} />
+                <Route path="/r/:id" element={<SharedRecipe />} />
               </Routes>
             </main>
             <Footer />
