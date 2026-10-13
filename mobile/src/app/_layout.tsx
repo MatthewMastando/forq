@@ -4,6 +4,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { StoreProvider } from '@/lib/store';
 import { useTheme } from '@/lib/theme';
@@ -35,20 +36,26 @@ export default function RootLayout() {
   };
 
   return (
-    <ThemeProvider value={navTheme}>
-      <StoreProvider>
-        <StatusBar style="auto" />
-        <Stack
-          screenOptions={{
-            headerTintColor: t.accent,
-            headerShadowVisible: false,
-            headerBackButtonDisplayMode: 'minimal',
-          }}>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="recipe/[id]" options={{ headerTransparent: true, title: '' }} />
-          <Stack.Screen name="new-plan" options={{ presentation: 'modal', headerShown: false }} />
-        </Stack>
-      </StoreProvider>
-    </ThemeProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ThemeProvider value={navTheme}>
+        <StoreProvider>
+          <StatusBar style="auto" />
+          <Stack
+            screenOptions={{
+              headerTintColor: t.accent,
+              headerShadowVisible: false,
+              headerBackButtonDisplayMode: 'minimal',
+            }}>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="recipe/[id]" options={{ headerTransparent: true, title: '' }} />
+            <Stack.Screen name="new-plan" options={{ presentation: 'modal', headerShown: false }} />
+            <Stack.Screen
+              name="swipe"
+              options={{ presentation: 'fullScreenModal', headerShown: false, gestureEnabled: false }}
+            />
+          </Stack>
+        </StoreProvider>
+      </ThemeProvider>
+    </GestureHandlerRootView>
   );
 }

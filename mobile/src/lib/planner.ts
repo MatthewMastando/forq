@@ -14,7 +14,7 @@ function shuffle<T>(items: T[]): T[] {
 }
 
 /** Dinner candidates for a goal: goal-specific recipes first (shuffled), then other dinners as backup. */
-function dinnerCandidates(goal: GoalId): Recipe[] {
+export function dinnerCandidates(goal: GoalId): Recipe[] {
   const forGoal = recipesForGoal(goal).filter((r) => r.mealType === 'dinner');
   const primary = shuffle(forGoal.filter((r) => r.goals[0] === goal));
   const secondary = shuffle(forGoal.filter((r) => r.goals[0] !== goal));
@@ -29,6 +29,21 @@ export function buildPlan(goal: GoalId, mode: PlanMode): PlanDay[] {
   if (mode === 'tonight') {
     return candidates.slice(0, 3).map((r, i) => ({ label: i === 0 ? 'Top pick' : 'Or try', recipeId: r.id }));
   }
+  return assignWeek(candidates);
+}
+
+/**
+ * A week built from swiped-right recipes. Picks come first; if there are fewer than seven,
+ * the rest is filled from the goal's other dinners.
+ */
+export function buildPlanFromPicks(goal: GoalId, pickedIds: string[]): PlanDay[] {
+  const picks = pickedIds.map((id) => RECIPES.find((r) => r.id === id)).filter((r): r is Recipe => !!r);
+  const picked = new Set(pickedIds);
+  const fill = dinnerCandidates(goal).filter((r) => !picked.has(r.id));
+  return assignWeek([...picks, ...fill].slice(0, WEEKDAYS.length));
+}
+
+function assignWeek(candidates: Recipe[]): PlanDay[] {
   const days: PlanDay[] = [];
   const pool = [...candidates];
   for (const label of WEEKDAYS) {

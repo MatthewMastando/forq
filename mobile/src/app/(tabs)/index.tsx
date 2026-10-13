@@ -115,6 +115,15 @@ export default function Discover() {
             onPress={() => (plan ? router.navigate('/plan') : router.push('/new-plan'))}
             style={{ minHeight: 48 }}
           />
+          {!plan && (
+            <Button
+              title="Or swipe to pick dinners"
+              icon="heart"
+              variant="secondary"
+              onPress={() => router.push({ pathname: '/new-plan', params: { swipe: '1' } })}
+              style={{ minHeight: 48, marginTop: -space.sm }}
+            />
+          )}
         </View>
       )}
 
