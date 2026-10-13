@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -14,6 +14,8 @@ import { useStore } from '@/lib/store';
 import { radius, space, useTheme } from '@/lib/theme';
 import type { GoalId, PlanMode } from '@/lib/types';
 
+type Choice = PlanMode | 'swipe';
+
 const STEPS = ['Goal', 'Store', 'People', 'Plan'];
 
 export default function NewPlan() {
@@ -21,17 +23,22 @@ export default function NewPlan() {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const { plan, setPlan } = useStore();
+  const params = useLocalSearchParams<{ swipe?: string }>();
   const [step, setStep] = useState(0);
   const [goal, setGoal] = useState<GoalId | null>(plan?.goal ?? null);
   const [store, setStore] = useState(plan?.store ?? 'Walmart');
   const [servings, setServings] = useState(plan?.servings ?? 2);
-  const [mode, setMode] = useState<PlanMode>(plan?.mode ?? 'week');
+  const [mode, setMode] = useState<Choice>(params.swipe ? 'swipe' : (plan?.mode ?? 'week'));
 
   const tileWidth = (width - space.xl * 2 - space.md) / 2;
   const last = step === STEPS.length - 1;
 
   function finish() {
     if (!goal) return;
+    if (mode === 'swipe') {
+      router.replace({ pathname: '/swipe', params: { goal, store, servings: String(servings) } });
+      return;
+    }
     setPlan({ goal, store, servings, mode, days: buildPlan(goal, mode), createdAt: new Date().toISOString() });
     router.dismiss();
     router.navigate('/plan');
@@ -170,6 +177,14 @@ export default function NewPlan() {
               large
             />
             <Option
+              title="Swipe to pick my week"
+              subtitle="Swipe right on dinners you like until you have 7"
+              icon="heart"
+              selected={mode === 'swipe'}
+              onPress={() => setMode('swipe')}
+              large
+            />
+            <Option
               title="Just tonight"
               subtitle="3 ideas to choose from"
               icon="restaurant"
@@ -190,8 +205,8 @@ export default function NewPlan() {
           <Button title="Back" variant="secondary" onPress={() => setStep((s) => s - 1)} style={{ flex: 1 }} />
         )}
         <Button
-          title={last ? 'Build my plan' : 'Continue'}
-          icon={last ? 'sparkles' : undefined}
+          title={last ? (mode === 'swipe' ? 'Start swiping' : 'Build my plan') : 'Continue'}
+          icon={last ? (mode === 'swipe' ? 'heart' : 'sparkles') : undefined}
           disabled={step === 0 && !goal}
           onPress={last ? finish : () => setStep((s) => s + 1)}
           style={{ flex: 2 }}
